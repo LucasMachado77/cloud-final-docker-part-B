@@ -33,7 +33,7 @@ function handleMessageInsertion($pdo)
         $escapedInput = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 
         // Insert the message into the database
-        $stmt = $pdo->prepare("INSERT INTO messages (message) VALUES (?)");
+        $stmt = $pdo->prepare("INSERT INTO messages (content) VALUES (?)");
         $stmt->execute([$escapedInput]);
 
         return '<div class="alert alert-success">Message added successfully!</div>';

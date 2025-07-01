@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+  reverse_proxy:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    configs:
+      - source: nginx_config
+        target: /etc/nginx/conf.d/default.conf
+    networks:
+      - app-net
+    deploy:
+      mode: replicated
+      replicas: 2
+
+  app:
+    image: php-app:1.0
+    build:
+      context: ../ipt_cloud_course_project
+    networks:
+      - app-net
+    secrets:
+      - db_password
+      - db_name
+      - db_user
+    environment:
+      - DB_HOST=postgresql-master
+      - DB_PORT=5432
+      - DB_NAME_FILE=/run/secrets/db_name
+      - DB_USER_FILE=/run/secrets/db_user
+      - DB_PASSWORD_FILE=/run/secrets/db_password
+    volumes:
+      - uploads:/var/www/html/img
+      - sessions:/tmp
+    deploy:
+      mode: replicated
+      replicas: 2
+
+  postgresql-master:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_REPLICATION_USER: replicator
+      POSTGRES_REPLICATION_PASSWORD: rep_password
+    networks:
+      - app-net
+    volumes:
+      - db1_data:/var/lib/postgresql/data
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+  postgresql-replica:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      REPLICATE_FROM: postgresql-master
+      REPLICATOR_PASS: rep_password
+    networks:
+      - app-net
+    volumes:
+      - db2_data:/var/lib/postgresql/data
+    depends_on:
+      - postgresql-master
+    command: bash -c "
+      until pg_isready -h postgresql-master; do sleep 2; done
+      && rm -rf /var/lib/postgresql/data/*
+      && PGPASSWORD=\$POSTGRES_REPLICATION_PASSWORD pg_basebackup -h postgresql-master -U replicator -D /var/lib/postgresql/data -Fp -Xs -P -R
+      && exec docker-entrypoint.sh postgres"
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+
+  # Consul - Service Discovery
+  consul:
+    image: hashicorp/consul:1.16
+    command: agent -dev -client=0.0.0.0
+    ports:
+      - "8500:8500"
+    networks:
+      - app-net
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+  # cAdvisor - Monitoramento GLOBAL (um por node)
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    deploy:
+      mode: global
+    ports:
+      - "8081:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - app-net
+
+  # Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app-net
+    deploy:
+      replicas: 1
+
+  # Grafana
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - app-net
+    deploy:
+      replicas: 1
+
+volumes:
+  db1_data:
+  db2_data:
+  uploads:
+  sessions:
+
+configs:
+  nginx_config:
+    file: ./nginx/default.conf
+
+secrets:
+  db_name:
+    file: ./secrets/db_name.txt
+  db_user:
+    file: ./secrets/db_user.txt
+  db_password:
+    file: ./secrets/db_password.txt
+
+networks:
+  app-net:
+    driver: overlay
+    attachable: true
