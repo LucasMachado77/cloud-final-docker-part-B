@@ -183,9 +183,7 @@ Problema: Rails não conecta ao banco.
 
 Solução: Certifique-se que as variáveis/segredos estão configuradas e que o banco está ativo (docker service ps cloud-final-docker_postgresql-node1).
 
-Autores
+Autor
 Lucas Machado – @LucasMachado77
-
-Renato Panda
 
 Projeto acadêmico - Mestrado em Engenharia de Computação (Instituto Politécnico de Tomar)
