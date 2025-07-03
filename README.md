@@ -32,7 +32,7 @@ Este projeto implementa um ecossistema cloud *moderno* para execução de aplica
 - **cAdvisor** para monitoramento de containers.
 
 ## Arquitetura
-
+```bash
 Internet
 │
 [NGINX Reverse Proxy] <--- Load balancing (porta 8080)
@@ -45,10 +45,7 @@ Internet
 ├─ Grafana (porta 3000)
 ├─ Consul (porta 8500)
 └─ cAdvisor (porta 8081)
-
-yaml
-Copiar
-Editar
+```
 
 ---
 
@@ -112,7 +109,8 @@ Estrutura do Projeto
 ├── Vagrantfile         # Infraestrutura VM local
 ├── entrypoint.sh       # Script de entrypoint do container Rails
 └── README.md
-
+```
+```bash
 Como Usar
 Acesso à aplicação:
 http://localhost:8080 (reverse proxy balanceando para o Rails)
