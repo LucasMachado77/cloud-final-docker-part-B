@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+  config.vm.boot_timeout = 600
 
   # Script para instalar o Docker em todas as VMs
   $docker_install_script = <<-SHELL

@@ -8,6 +8,8 @@ services:
     configs:
       - source: nginx_config
         target: /etc/nginx/conf.d/default.conf
+    volumes:
+      - uploads:/var/www/html/gallery
     networks:
       - app-net
     deploy:
@@ -31,7 +33,7 @@ services:
       - DB_USER_FILE=/run/secrets/db_user
       - DB_PASSWORD_FILE=/run/secrets/db_password
     volumes:
-      - uploads:/var/www/html/img
+      - uploads:/var/www/html/gallery
       - sessions:/tmp
     deploy:
       mode: replicated
