@@ -98,6 +98,7 @@ docker stack deploy -c docker-compose.yml cloud-final-docker
 docker service ls
 Todos os serviços devem aparecer como REPLICAS X/X.
 ```
+```bash
 Estrutura do Projeto
 .
 ├── app/                # Código-fonte da aplicação (Rails)
@@ -111,6 +112,7 @@ Estrutura do Projeto
 ├── Vagrantfile         # Infraestrutura VM local
 ├── entrypoint.sh       # Script de entrypoint do container Rails
 └── README.md
+```
 Como Usar
 Acesso à aplicação:
 http://localhost:8080 (reverse proxy balanceando para o Rails)
