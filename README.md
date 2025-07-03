@@ -112,24 +112,29 @@ Estrutura do Projeto
 ├── Vagrantfile         # Infraestrutura VM local
 ├── entrypoint.sh       # Script de entrypoint do container Rails
 └── README.md
-```
+
 Como Usar
 Acesso à aplicação:
 http://localhost:8080 (reverse proxy balanceando para o Rails)
-
+```
+```bash
 Prometheus:
 http://localhost:9090
-
+```
+```bash
 Grafana:
 http://localhost:3000
 Login padrão: admin/admin
-
+```
+```bash
 Consul:
 http://localhost:8500
-
+```
+```bash
 cAdvisor:
 http://localhost:8081
-
+```
+```bash
 Monitoramento
 Prometheus coleta métricas dos serviços.
 
@@ -141,7 +146,8 @@ Service Discovery
 Consul permite visualizar e registrar os serviços do ecossistema.
 
 Serviços são automaticamente registrados via Docker Compose.
-
+```
+```bash
 Credenciais e Segredos
 Os arquivos de segredos devem ser criados em ./secrets/, por exemplo:
 
@@ -156,7 +162,8 @@ rails_secret_key_base.txt
 db_connection_string.txt
 
 Copie ou gere estes arquivos com as senhas adequadas antes de subir o stack!
-
+```
+```bash
 FAQ e Solução de Problemas
 Problema: Erro de banco de dados na aplicação.
 
@@ -173,8 +180,11 @@ Solução: Os arquivos de segredos precisam estar com permissões corretas e sem
 Problema: Rails não conecta ao banco.
 
 Solução: Certifique-se que as variáveis/segredos estão configuradas e que o banco está ativo (docker service ps cloud-final-docker_postgresql-node1).
-
+```
+```bash
 Autor
 Lucas Machado – @LucasMachado77
-
+```
+```bash
 Projeto acadêmico - Mestrado em Engenharia de Computação (Instituto Politécnico de Tomar)
+```
