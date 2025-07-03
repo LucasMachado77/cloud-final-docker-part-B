@@ -69,47 +69,30 @@ Editar
 ```bash
 git clone https://github.com/LucasMachado77/cloud-final-docker-part-B.git
 cd cloud-final-docker-part-B
+
 2. Gere as chaves SSH (se necessário)
-bash
-Copiar
-Editar
 ssh-keygen -t ed25519 -C "your_email@example.com"
 Salve em ~/.ssh/id_ed25519 (padrão).
 
 3. Suba as VMs com Vagrant
-bash
-Copiar
-Editar
 vagrant up
 Espere todos os hosts subirem (manager, worker-1, worker-2).
 
 4. Acesse a VM manager:
-bash
-Copiar
-Editar
 vagrant ssh manager
 cd /vagrant
+
 5. Build da aplicação Rails (dentro do manager):
-bash
-Copiar
-Editar
 docker build -t workout-app:1.0 ./workoutday
+
 6. Suba o stack Docker Swarm
-bash
-Copiar
-Editar
 docker stack deploy -c docker-compose.yml cloud-final-docker
+
 7. Verifique os serviços
-bash
-Copiar
-Editar
 docker service ls
-Todos os serviços devem aparecer como REPLICAS X/X.
+Todos os serviços devem aparecer como REPLICAS X/X.```
 
 Estrutura do Projeto
-bash
-Copiar
-Editar
 .
 ├── app/                # Código-fonte da aplicação (Rails)
 ├── nginx/              # Configuração do NGINX
